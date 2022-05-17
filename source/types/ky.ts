@@ -27,7 +27,7 @@ export interface KyInstance {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	get: <T = any, R = any>(url: Input, options?: Options<T>) => ResponsePromise<R>;
+	get: <Res = any, Data = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'post'}`.
@@ -35,7 +35,7 @@ export interface KyInstance {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	post: <T = any, R = any>(url: Input, options?: Options<T>) => ResponsePromise<R>;
+	post: <Data = any, Res = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'put'}`.
@@ -43,7 +43,7 @@ export interface KyInstance {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	put: <T = any, R = any>(url: Input, options?: Options<T>) => ResponsePromise<R>;
+	put: <Data = any, Res = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'delete'}`.
@@ -51,7 +51,7 @@ export interface KyInstance {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	delete: <T = any, R = any>(url: Input, options?: Options<T>) => ResponsePromise<R>;
+	delete: <Data = any, Res = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'patch'}`.
@@ -59,7 +59,7 @@ export interface KyInstance {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	patch: <T = any, R = any>(url: Input, options?: Options<T>) => ResponsePromise<R>;
+	patch: <Data = any, Res = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'head'}`.
