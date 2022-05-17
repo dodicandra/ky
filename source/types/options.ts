@@ -27,7 +27,7 @@ export type KyHeadersInit = HeadersInit | Record<string, string | undefined>;
 /**
 Options are the same as `window.fetch`, with some exceptions.
 */
-export interface Options extends Omit<RequestInit, 'headers'> {
+export interface Options<T = unknown> extends Omit<RequestInit, 'headers'> {
 	/**
 	HTTP method used to make the request.
 
@@ -77,7 +77,7 @@ export interface Options extends Omit<RequestInit, 'headers'> {
 
 	Accepts any plain object or value, which will be `JSON.stringify()`'d and sent in the body with the correct header set.
 	*/
-	json?: unknown;
+	json?: T;
 
 	/**
 	User-defined JSON-parsing function.
