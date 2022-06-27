@@ -2,7 +2,7 @@ import {HTTPError} from '../errors/HTTPError.js';
 import {TimeoutError} from '../errors/TimeoutError.js';
 import type {Hooks} from '../types/hooks.js';
 import type {Input, InternalOptions, NormalizedOptions, Options, SearchParamsInit} from '../types/options.js';
-import {ResponsePromise} from '../types/response.js';
+import {ResponsePromise} from '../types/ResponsePromise.js';
 import {deepMerge, mergeHeaders} from '../utils/merge.js';
 import {normalizeRequestMethod, normalizeRetryOptions} from '../utils/normalize.js';
 import {delay, timeout, TimeoutOptions} from '../utils/time.js';
@@ -167,7 +167,7 @@ export class Ky {
 			// To provide correct form boundary, Content-Type header should be deleted each time when new Request instantiated from another one
 			if (
 				((supportsFormData && this._options.body instanceof globalThis.FormData)
-				|| this._options.body instanceof URLSearchParams) && !(this._options.headers && (this._options.headers as Record<string, string>)['content-type'])
+					|| this._options.body instanceof URLSearchParams) && !(this._options.headers && (this._options.headers as Record<string, string>)['content-type'])
 			) {
 				this.request.headers.delete('content-type');
 			}
@@ -314,6 +314,11 @@ export class Ky {
 					await read();
 				},
 			}),
+			{
+				status: response.status,
+				statusText: response.statusText,
+				headers: response.headers,
+			},
 		);
 	}
 }
