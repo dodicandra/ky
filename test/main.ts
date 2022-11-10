@@ -236,18 +236,48 @@ test('.json() with custom accept header', async t => {
 	await server.close();
 });
 
-test('.json() with 200 response and empty body', async t => {
+test('.json() when response is chunked', async t => {
+	const server = await createHttpTestServer();
+	server.get('/', async (request, response) => {
+		response.write('[');
+		response.write('"one",');
+		response.write('"two"');
+		response.end(']');
+	});
+
+	const responseJson = await ky.get(server.url).json();
+
+	t.deepEqual(responseJson, ['one', 'two']);
+
+	await server.close();
+});
+
+test('.json() with invalid JSON body', async t => {
+	const server = await createHttpTestServer();
+	server.get('/', async (request, response) => {
+		t.is(request.headers.accept, 'application/json');
+		response.end('not json');
+	});
+
+	await t.throwsAsync(ky.get(server.url).json(), {
+		message: /Unexpected token/,
+	});
+
+	await server.close();
+});
+
+test('.json() with empty body', async t => {
 	t.plan(2);
 
 	const server = await createHttpTestServer();
 	server.get('/', async (request, response) => {
 		t.is(request.headers.accept, 'application/json');
-		response.status(200).end();
+		response.end();
 	});
 
-	await t.throwsAsync(ky(server.url).json(), {
-		message: /Unexpected end of JSON input/,
-	});
+	const responseJson = await ky.get(server.url).json();
+
+	t.is(responseJson, '');
 
 	await server.close();
 });
@@ -552,7 +582,7 @@ test('ky.extend()', async t => {
 	await server.close();
 });
 
-test('throws AbortError when aborted by user', async t => {
+test('throws DOMException when aborted by user', async t => {
 	const server = await createHttpTestServer();
 	// eslint-disable-next-line @typescript-eslint/no-empty-function
 	server.get('/', () => {});
@@ -562,7 +592,8 @@ test('throws AbortError when aborted by user', async t => {
 	const response = ky(server.url, {signal});
 	abortController.abort();
 
-	await t.throwsAsync(response, {name: 'AbortError'});
+	const {name} = (await t.throwsAsync(response))!;
+	t.true(['DOMException', 'Error'].includes(name), `Expected DOMException or Error, got ${name}`);
 });
 
 test('supports Request instance as input', async t => {
