@@ -246,7 +246,9 @@ export type KyOptionsRegistry = { [K in keyof KyOptions]-?: true };
 /**
 Options are the same as `window.fetch`, except for the KyOptions
 */
-export interface Options extends KyOptions, Omit<RequestInit, "headers"> {
+export interface Options<T = unknown>
+	extends KyOptions<T>,
+		Omit<RequestInit, "headers"> {
 	// eslint-disable-line @typescript-eslint/consistent-type-definitions -- This must stay an interface so that it can be extended outside of Ky for use in `ky.create`.
 	/**
 	HTTP method used to make the request.
