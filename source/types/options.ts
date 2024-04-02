@@ -1,14 +1,22 @@
-import type {LiteralUnion, Required} from './common.js';
-import type {Hooks} from './hooks.js';
-import type {RetryOptions} from './retry.js';
+import type { LiteralUnion, Required } from "./common.js";
+import type { Hooks } from "./hooks.js";
+import type { RetryOptions } from "./retry.js";
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
-export type SearchParamsInit = string | string[][] | Record<string, string> | URLSearchParams | undefined;
+export type SearchParamsInit =
+	| string
+	| string[][]
+	| Record<string, string>
+	| URLSearchParams
+	| undefined;
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
-export type SearchParamsOption = SearchParamsInit | Record<string, string | number | boolean> | Array<Array<string | number | boolean>>;
+export type SearchParamsOption =
+	| SearchParamsInit
+	| Record<string, string | number | boolean>
+	| Array<Array<string | number | boolean>>;
 
-export type HttpMethod = 'get' | 'post' | 'put' | 'patch' | 'head' | 'delete';
+export type HttpMethod = "get" | "post" | "put" | "patch" | "head" | "delete";
 
 export type Input = string | URL | Request;
 
@@ -23,19 +31,66 @@ export type DownloadProgress = {
 };
 
 // Not HeadersInit directly because @types/node doesn't export it
-export type KyHeadersInit = NonNullable<RequestInit['headers']> | Record<string, string | undefined>;
+export type KyHeadersInit =
+	| NonNullable<RequestInit["headers"]>
+	| Record<string, string | undefined>;
 
 /**
 Custom Ky options
 */
+export interface Options<T = unknown> extends Omit<RequestInit, "headers"> {
+	/**
+	HTTP method used to make the request.
 
-export type KyOptions = {
+	Internally, the standard methods (`GET`, `POST`, `PUT`, `PATCH`, `HEAD` and `DELETE`) are uppercased in order to avoid server errors due to case sensitivity.
+	*/
+	method?: LiteralUnion<HttpMethod, string>;
+
+	/**
+	HTTP headers used to make the request.
+
+	You can pass a `Headers` instance or a plain object.
+
+	You can remove a header with `.extend()` by passing the header with an `undefined` value.
+
+	@example
+	```
+	import ky from 'ky';
+
+	const url = 'https://sindresorhus.com';
+
+	const original = ky.create({
+		headers: {
+			rainbow: 'rainbow',
+			unicorn: 'unicorn'
+		}
+	});
+
+	const extended = original.extend({
+		headers: {
+			rainbow: undefined
+		}
+	});
+
+	const response = await extended(url).json();
+
+	console.log('rainbow' in response);
+	//=> false
+
+	console.log('unicorn' in response);
+	//=> true
+	```
+	*/
+	headers?: KyHeadersInit;
+}
+
+export type KyOptions<T = unknown> = {
 	/**
 	Shortcut for sending JSON. Use this instead of the `body` option.
 
 	Accepts any plain object or value, which will be `JSON.stringify()`'d and sent in the body with the correct header set.
 	*/
-	json?: unknown;
+	json?: T;
 
 	/**
 	User-defined JSON-parsing function.
@@ -186,12 +241,13 @@ Each key from KyOptions is present and set to `true`.
 
 This type is used for identifying and working with the known keys in KyOptions.
 */
-export type KyOptionsRegistry = {[K in keyof KyOptions]-?: true};
+export type KyOptionsRegistry = { [K in keyof KyOptions]-?: true };
 
 /**
 Options are the same as `window.fetch`, except for the KyOptions
 */
-export interface Options extends KyOptions, Omit<RequestInit, 'headers'> { // eslint-disable-line @typescript-eslint/consistent-type-definitions -- This must stay an interface so that it can be extended outside of Ky for use in `ky.create`.
+export interface Options extends KyOptions, Omit<RequestInit, "headers"> {
+	// eslint-disable-line @typescript-eslint/consistent-type-definitions -- This must stay an interface so that it can be extended outside of Ky for use in `ky.create`.
 	/**
 	HTTP method used to make the request.
 
@@ -238,8 +294,8 @@ export interface Options extends KyOptions, Omit<RequestInit, 'headers'> { // es
 }
 
 export type InternalOptions = Required<
-Omit<Options, 'hooks' | 'retry'>,
-'fetch' | 'prefixUrl' | 'timeout'
+	Omit<Options, "hooks" | "retry">,
+	"fetch" | "prefixUrl" | "timeout"
 > & {
 	headers: Required<Headers>;
 	hooks: Required<Hooks>;
@@ -250,15 +306,16 @@ Omit<Options, 'hooks' | 'retry'>,
 /**
 Normalized options passed to the `fetch` call and the `beforeRequest` hooks.
 */
-export interface NormalizedOptions extends RequestInit { // eslint-disable-line @typescript-eslint/consistent-type-definitions -- This must stay an interface so that it can be extended outside of Ky for use in `ky.create`.
+export interface NormalizedOptions extends RequestInit {
+	// eslint-disable-line @typescript-eslint/consistent-type-definitions -- This must stay an interface so that it can be extended outside of Ky for use in `ky.create`.
 	// Extended from `RequestInit`, but ensured to be set (not optional).
-	method: NonNullable<RequestInit['method']>;
-	credentials?: NonNullable<RequestInit['credentials']>;
+	method: NonNullable<RequestInit["method"]>;
+	credentials?: NonNullable<RequestInit["credentials"]>;
 
 	// Extended from custom `KyOptions`, but ensured to be set (not optional).
 	retry: RetryOptions;
 	prefixUrl: string;
-	onDownloadProgress: Options['onDownloadProgress'];
+	onDownloadProgress: Options["onDownloadProgress"];
 }
 
-export type {RetryOptions} from './retry.js';
+export type { RetryOptions } from "./retry.js";

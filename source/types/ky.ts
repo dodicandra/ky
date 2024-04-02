@@ -27,7 +27,7 @@ export type KyInstance = {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	get: (url: Input, options?: Options) => ResponsePromise;
+	get: <Res = any, Data = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'post'}`.
@@ -35,7 +35,7 @@ export type KyInstance = {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	post: (url: Input, options?: Options) => ResponsePromise;
+	post: <Data = any, Res = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'put'}`.
@@ -43,7 +43,7 @@ export type KyInstance = {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	put: (url: Input, options?: Options) => ResponsePromise;
+	put: <Data = any, Res = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'delete'}`.
@@ -51,7 +51,7 @@ export type KyInstance = {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	delete: (url: Input, options?: Options) => ResponsePromise;
+	delete: <Data = any, Res = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'patch'}`.
@@ -59,7 +59,7 @@ export type KyInstance = {
 	@param url - `Request` object, `URL` object, or URL string.
 	@returns A promise with `Body` methods added.
 	*/
-	patch: (url: Input, options?: Options) => ResponsePromise;
+	patch: <Data = any, Res = any>(url: Input, options?: Options<Data>) => ResponsePromise<Res>;
 
 	/**
 	Fetch the given `url` using the option `{method: 'head'}`.
